@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form action="{% url 'upload' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="container mt-5">
+        <!-- Card container for upload form -->
+        <div class="card mx-auto" style="max-width: 600px;">
+            <div class="card-header text-center">
+                <h4>Upload Picture and Comment</h4>
+            </div>
+            <div class="card-body">
+                <!-- Form to upload picture and comment -->
+                <!-- CSRF token for security -->
+                
+                <!-- Display logged in user -->
+                <p class="text-muted">Logged in as: <strong>{{ request.user.username }}</strong></p>
+
+                <!-- Picture upload input -->
+                <div class="mb-3">
+                    <label for="picture">Upload Picture</label>
+                    <input class="form-control" type="file" id="picture" name="image_upload" required>
+                </div>
+
+                <!-- Comment input -->
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Comment</label>
+                    <textarea class="form-control" id="comment" name="caption" rows="3" placeholder="Enter your comment" required></textarea>
+                </div>
+
+                <!-- Submit button -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-block">Upload</button>
+                </div>
+            </div>
+        </div>
+
+        
+</form>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    .container {
+        background-color: rgb(240, 208, 171);
+    }
+    .card-img-top {
+        object-fit: cover;
+        height: 180px;
+    }
+    .btn-unfollow {
+        font-size: 0.8rem;
+        padding: 0.5rem 1.5rem;  /* Adjusted padding to ensure a proper rectangle */
+        border-radius: 0.25rem;  /* Set a small border-radius to ensure it's rectangular */
+    }
+</style>
+
+<div class="container col-lg-8 col-md-10 shadow p-5 offset-lg-2 offset-md-1 mt-4">
+    <!-- Profile Section -->
+    <div class="row mb-4">
+        <div class="col-md-8 d-flex align-items-center">
+            {% if user_profile and user_profile.profileimg %}
+                <img src="{{ user_profile.profileimg.url }}" alt="Profile Image" 
+                     class="img-thumbnail rounded-circle border border-2 border-black me-4" 
+                     style="height: 160px; width: 160px;">
+            {% else %}
+                <img src="{% static 'blank-profile-picture.png' %}" 
+                     class="img-thumbnail rounded-circle border border-2 border-black me-4" 
+                     style="height: 160px; width: 160px;" alt="...">
+            {% endif %}
+            <div>
+                <h5 class="mb-0 fs-2"> {{ user_profile.user.username }}</h5>
+                <p class="text-muted">{{ user_profile.bio }}</p>
+            </div>
+        </div>
+        
+    </div>
+
+    
+    <form action="/follow" method="POST">
+        {% csrf_token %}
+        <div class="row mb-4">
+            <div class="col d-flex justify-content-center justify-content-md-end fw-bold fs-5">
+                <p class="mb-0 me-4">{{ user_post_length }} posts</p>
+                <p class="mb-0 me-4">{{user_followers}} follower</p>
+                <p class="mb-0">{{user_following}}following</p>
+            </div>
+            <div>
+            {% if user_object.username == user.username %}
+    <a href="/settings" data-ripple="">Account Settings</a>
+{% else %}
+    <form action="{% url 'follow' %}" method="POST" style="display: inline;">
+        {% csrf_token %}
+        <input type="hidden" name="follower" value="{{ request.user.username }}">
+        <input type="hidden" name="user" value="{{ user.username }}">
+        <button type="submit" class="btn btn-small btn-danger">
+            {{ button_text }}
+        </button>
+    </form>
+{% endif %}
+</div>
+
+        </div>
+    </form>
+    
+    <hr>
+
+    <!-- Posts Section -->
+    <div class="container mt-5">
+        <div class="row">
+            {% for post in user_posts %}
+            <div class="col-sm-6 col-lg-4 mb-4">
+                <div class="card border border-black border-2">
+                    <img src="{{ post.image.url }}" class="card-img-top" alt="Post Image">
+                    <div class="card-body">
+                        <a href="/like-post?post_id={{post.id}}"><i class="fa-regular fa-heart btn btn-outline-danger"></i></a>
+                        {% if post.no_of_likes == 0 %}
+                         <p class="fw-bold">No likes</p>
+                         {% elif post.no_of_likes == 1 %}
+                         <p class="fw-bold">Liked by {{post.no_of_likes}} person</p>
+                         {% else %}
+                         <p class="fw-bold">Liked by {{post.no_of_likes}} people</p>
+                         {% endif %}
+                        <p class="card-text mt-2">{{ post.caption }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+
+{% endblock %}
+
+
+<script data-cfasync="false" src="{% static '../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js' %}"></script><script src="{% static 'js/main.min.js' %}"></script>
+	<script src="{% static 'js/script.js' %}"></script>
